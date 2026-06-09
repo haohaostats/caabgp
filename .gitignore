@@ -1,0 +1,11 @@
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rcheck/
+*.tar.gz
+*.pdf
+*.svg
+allocation_map.*
+Thumbs.db
+.DS_Store

@@ -1,0 +1,28 @@
+Package: caabgp
+Type: Package
+Title: Cost-Aware Adaptive-Borrowing Gaussian-Process Bayesian Optimization
+Version: 0.1.0
+Authors@R: c(
+    person("Hao", "Chen", role = c("aut", "cre"), email = "hche2036@uni.sydney.edu.au"),
+    person("Clara", "Grazian", role = "aut")
+  )
+Author: Hao Chen [aut, cre], Clara Grazian [aut]
+Maintainer: Hao Chen <hche2036@uni.sydney.edu.au>
+Description: Empirical-Bayes Gaussian-process Bayesian optimization tools for
+    personalized combination dose-finding trials. The package implements the
+    cost-aware adaptive-borrowing Gaussian-process design with finite dose grids,
+    operational costs, and stratum-specific recommendations.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports:
+    ggplot2,
+    stats,
+    tools,
+    utils
+Suggests:
+    testthat
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+URL: https://github.com/haohaostats/caabgp
+BugReports: https://github.com/haohaostats/caabgp/issues
