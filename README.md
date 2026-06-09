@@ -11,17 +11,18 @@ paper-specific simulation script.
 
 ### Local source installation
 
-After downloading or cloning the source package, install from the parent
-directory:
-
-```r
-install.packages("caabgp", repos = NULL, type = "source")
-```
-
-Alternatively, install a built source archive:
+Download the source package from the
+[v0.1.0 release](https://github.com/haohaostats/caabgp/releases/tag/v0.1.0),
+then install the local archive:
 
 ```r
 install.packages("caabgp_0.1.0.tar.gz", repos = NULL, type = "source")
+```
+
+After cloning the source repository, install from the parent directory:
+
+```r
+install.packages("caabgp", repos = NULL, type = "source")
 ```
 
 From a shell:
