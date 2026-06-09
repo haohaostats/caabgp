@@ -1,7 +1,7 @@
 Package: caabgp
 Type: Package
 Title: Cost-Aware Adaptive-Borrowing Gaussian-Process Bayesian Optimization
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Hao", "Chen", role = c("aut", "cre"), email = "hche2036@uni.sydney.edu.au"),
     person("Clara", "Grazian", role = "aut")
