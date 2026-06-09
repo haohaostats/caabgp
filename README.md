@@ -1,5 +1,9 @@
 # caabgp
 
+[![R-CMD-check](https://github.com/haohaostats/caabgp/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/haohaostats/caabgp/actions/workflows/R-CMD-check.yaml)
+[![GitHub release](https://img.shields.io/github/v/release/haohaostats/caabgp)](https://github.com/haohaostats/caabgp/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 `caabgp` implements the empirical-Bayes cost-aware adaptive-borrowing
 Gaussian-process Bayesian optimization design for personalized combination
 dose-finding trials.
