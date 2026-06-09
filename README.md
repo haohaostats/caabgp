@@ -8,8 +8,7 @@
 Gaussian-process Bayesian optimization design for personalized combination
 dose-finding trials.
 
-The package is designed as a reusable trial-design engine rather than a
-paper-specific simulation script.
+The package is designed as a reusable trial-design engine.
 
 ## Installation
 
