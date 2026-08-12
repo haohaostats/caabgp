@@ -15,6 +15,10 @@ recommendations for all strata use the complete trial history.
 
 The package is designed as a reusable trial-design engine.
 
+| Adaptive borrowing | Cost-aware allocation | Operational safeguards |
+|:--|:--|:--|
+| Learns a shared response surface while retaining stratum-specific deviations. | Balances expected improvement against patient, screening, and novel-dose costs. | Enforces complete cohorts, fixed budgets, sample-size limits, and stratum-specific stopping. |
+
 ## Installation
 
 ### Local source installation
@@ -78,6 +82,30 @@ borrowing_index(trial)
 Smaller outcome values are treated as more favorable. In an actual trial,
 use `fit_caabgp()`, `suggest_next()`, and `update_trial_data()` to alternate
 between model fitting, allocation, and entry of newly observed outcomes.
+
+### Example output
+
+<p align="center">
+  <img src="man/figures/caabgp-allocation.png" width="33%" alt="Sequential allocation map">
+  <img src="man/figures/caabgp-surface-stratum-1.png" width="31%" alt="Predictive surface for stratum 1">
+  <img src="man/figures/caabgp-surface-stratum-2.png" width="31%" alt="Predictive surface for stratum 2">
+</p>
+
+The allocation map shows the number of patients evaluated at each dose
+combination. Triangles mark the final stratum-specific recommendations; darker
+surface regions indicate lower, more favorable predicted outcomes.
+
+| Stratum | Recommended dose | Predictive mean | Predictive SD |
+|:--:|:--:|--:|--:|
+| 1 | `(0.25, 0.75)` | -0.914 | 0.064 |
+| 2 | `(0.75, 0.25)` | -0.988 | 0.067 |
+
+| Final sample size | Unique doses | Repeat allocation | Total cost | Borrowing index |
+|--:|--:|--:|--:|--:|
+| 34 | 13 | 33.3% | 99 / 100 | 0.074 |
+
+These deterministic quick-start results use the fixed seeds shown above and
+are intended only to illustrate the package workflow.
 
 ## Advanced configuration
 

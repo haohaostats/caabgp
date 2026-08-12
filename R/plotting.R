@@ -113,7 +113,13 @@ plot_surface <- function(fit, stratum = 1, design = fit$design, recommendations 
   ) +
     ggplot2::geom_tile() +
     ggplot2::geom_contour(
-      ggplot2::aes(z = .data$mu),
+      data = pk,
+      ggplot2::aes(
+        x = .data[[design$dose_cols[1]]],
+        y = .data[[design$dose_cols[2]]],
+        z = .data$mu
+      ),
+      inherit.aes = FALSE,
       color = "white",
       linewidth = 0.42,
       alpha = 0.85,
