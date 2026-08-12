@@ -7,6 +7,4 @@ if (getRversion() < "4.3.0") warning("R >= 4.3.0 is recommended; found ", getRve
 cat("R version: ", R.version.string, "\n", sep = "")
 cat("Platform: ", R.version$platform, "\n", sep = "")
 cat("Logical CPU cores: ", parallel::detectCores(), "\n", sep = "")
-cat("pdflatex: ", if (nzchar(Sys.which("pdflatex"))) Sys.which("pdflatex") else "not found (optional)", "\n", sep = "")
 cat("Environment check passed.\n")
-

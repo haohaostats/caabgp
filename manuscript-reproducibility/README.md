@@ -13,7 +13,7 @@ source("scripts/03_run_case_application.R")
 source("scripts/04_validate_reproduction.R")
 ```
 
-The regenerated vector PDF figures and LaTeX tables are collected in `manuscript_outputs/`.
+The regenerated vector PDF figures and R-rendered vector PDF tables are collected in `manuscript_outputs/`.
 
 ## Repository structure
 
@@ -23,7 +23,7 @@ The regenerated vector PDF figures and LaTeX tables are collected in `manuscript
 - `case_application/`: Brock database, fixed application configuration, generated results, Figures 6--7, and Table 9.
 - `results_r/`: compact verified inputs used to rebuild the manuscript displays without rerunning 1,000 replicates.
 - `scripts/`: environment check, full simulation, display rebuild, case application, and validation entry points.
-- `manuscript_outputs/`: publication-ready vector PDFs and LaTeX/CSV tables.
+- `manuscript_outputs/`: publication-ready vector PDF figures and tables, plus numerical CSV tables.
 
 ## Full simulation rerun
 
@@ -53,7 +53,7 @@ The application entry point directly loads this prespecified study-outcome combi
 
 ## Software
 
-The analysis uses base R and the standard `parallel` package. It does not require an external R package. A LaTeX installation is optional and is needed only to compile the standalone table `.tex` files to PDF.
+The analysis uses base R and the recommended `parallel` and `grid` packages. It does not require external typesetting software or an external R package. All figures and tables are rendered directly as vector PDFs by R.
 
 ## Reproducibility notes
 

@@ -6,7 +6,7 @@ unchanged in their original directory.
 
 ## Manuscript-to-code alignment
 
-The sequential implementation follows the current `manuscript/manuscript.tex`
+The sequential implementation follows the current manuscript
 algorithm in three places that were not all represented in the earlier
 simulation pipeline:
 
@@ -36,7 +36,7 @@ surrogate and acquisition definitions.
   every recorded adaptive allocation had `cohort_size == planned_cohort_size`
   and no sample-size or budget violation occurred.
 - The real-data-calibrated application completed under the aligned code.  Its
-  application CSV and LaTeX summaries were byte-identical to the earlier run,
+  application CSV summaries were byte-identical to the earlier run,
   because all application allocations already used complete cohorts of two.
 
 ## Full simulation command

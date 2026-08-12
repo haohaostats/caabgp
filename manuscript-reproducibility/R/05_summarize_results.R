@@ -50,130 +50,6 @@ scenario_result_caption <- function(scenario) {
   )
 }
 
-write_scenario_results_tex <- function(tab, scenario, n_mc) {
-  metrics <- c("n", "regret", "near_optimal", "dose_distance", "rpsel", "unique_doses", "total_cost")
-  headers <- c("Final sample size", "Regret", "Near-optimal selection", "Dose distance", "RPSEL", "Unique doses", "Total cost")
-  rows_s <- tab[tab$scenario == scenario, ]
-  rows_s <- rows_s[order(match(rows_s$method, METHODS)), ]
-
-  lines <- c(
-    "\\begin{table*}[t]",
-    "\\centering",
-    sprintf("\\caption{%s}", scenario_result_caption(scenario)),
-    sprintf("\\label{tab:scenario%d_results}", scenario),
-    "\\footnotesize",
-    "\\setlength{\\tabcolsep}{4pt}",
-    "\\begin{tabular}{lcccccccc}",
-    "\\toprule",
-    paste(c("\\textbf{Design}", paste0("\\textbf{", headers, "}"), "$\\boldsymbol{\\widehat\\rho_b}$"), collapse = " & "),
-    "\\\\",
-    "\\midrule"
-  )
-
-  for (i in seq_len(nrow(rows_s))) {
-    vals <- vapply(
-      metrics,
-      function(m) format_mean_se(rows_s[[paste0(m, "_mean")]][i], rows_s[[paste0(m, "_se")]][i]),
-      character(1)
-    )
-    rho_val <- if ("rho_mean" %in% names(rows_s) && is.finite(rows_s$rho_mean[i])) {
-      format_mean_se(rows_s$rho_mean[i], rows_s$rho_se[i])
-    } else {
-      "--"
-    }
-    lines <- c(lines, paste(c(rows_s$method[i], vals, rho_val), collapse = " & "), "\\\\")
-  }
-
-  lines <- c(lines, "\\bottomrule", "\\end{tabular}", "\\end{table*}")
-  writeLines(lines, file.path(DIR_RESULTS, sprintf("table_scenario%d_results_n%d.tex", scenario, n_mc)))
-}
-
-write_main_results_tex <- function(tab, n_mc) {
-  metrics <- c("n", "regret", "near_optimal", "dose_distance", "rpsel", "unique_doses", "total_cost")
-  headers <- c("Final sample size", "Regret", "Near-optimal", "Dose distance", "RPSEL", "Unique doses", "Total cost")
-  lines <- c(
-    "\\begin{table*}[t]",
-    "\\centering",
-    "\\caption{Fixed-budget operating characteristics across the revised primary simulation scenarios. Values are Monte Carlo means, with standard errors in parentheses.}",
-    "\\label{tab:main_results}",
-    "\\footnotesize",
-    "\\setlength{\\tabcolsep}{4pt}",
-    "\\begin{tabular}{llcccccccc}",
-    "\\toprule",
-    paste(c("\\textbf{Scenario}", "\\textbf{Design}", paste0("\\textbf{", headers, "}"), "$\\boldsymbol{\\widehat\\rho_b}$"), collapse = " & "),
-    "\\\\",
-    "\\midrule"
-  )
-
-  tab <- tab[order(tab$scenario, match(tab$method, METHODS)), ]
-  for (s in sort(unique(tab$scenario))) {
-    rows_s <- tab[tab$scenario == s, ]
-    for (i in seq_len(nrow(rows_s))) {
-      vals <- vapply(
-        metrics,
-        function(m) format_mean_se(rows_s[[paste0(m, "_mean")]][i], rows_s[[paste0(m, "_se")]][i]),
-        character(1)
-      )
-      rho_val <- if ("rho_mean" %in% names(rows_s) && is.finite(rows_s$rho_mean[i])) {
-        format_mean_se(rows_s$rho_mean[i], rows_s$rho_se[i])
-      } else {
-        "--"
-      }
-      scenario_label <- if (i == 1) as.character(s) else ""
-      lines <- c(lines, paste(c(scenario_label, rows_s$method[i], vals, rho_val), collapse = " & "), "\\\\")
-    }
-    if (s != max(tab$scenario)) lines <- c(lines, "\\addlinespace")
-  }
-
-  lines <- c(lines, "\\bottomrule", "\\end{tabular}", "\\end{table*}")
-  writeLines(lines, file.path(DIR_RESULTS, sprintf("table_main_results_n%d.tex", n_mc)))
-}
-
-write_sensitivity_results_tex <- function(tab, n_mc) {
-  lines <- c(
-    "\\begin{table}[t]",
-    "\\centering",
-    "\\caption{Sensitivity analyses for the proposed CA-AB-GP design under Scenario~3. Values are Monte Carlo means, with standard errors in parentheses.}",
-    "\\label{tab:sensitivity_results}",
-    "\\footnotesize",
-    "\\setlength{\\tabcolsep}{4pt}",
-    "\\begin{tabular}{llccccc}",
-    "\\toprule",
-    paste(
-      c(
-        "\\textbf{Sensitivity factor}", "\\textbf{Setting}",
-        "\\textbf{Final sample size}", "\\textbf{Regret}",
-        "\\textbf{Near-optimal selection}", "\\textbf{Unique doses}",
-        "\\textbf{Total cost}"
-      ),
-      collapse = " & "
-    ),
-    "\\\\",
-    "\\midrule"
-  )
-
-  factors <- unique(tab$factor)
-  for (factor_index in seq_along(factors)) {
-    rows <- tab[tab$factor == factors[factor_index], , drop = FALSE]
-    for (i in seq_len(nrow(rows))) {
-      vals <- vapply(
-        c("n", "regret", "near_optimal", "unique_doses", "total_cost"),
-        function(m) format_mean_se(rows[[paste0(m, "_mean")]][i], rows[[paste0(m, "_se")]][i]),
-        character(1)
-      )
-      lines <- c(
-        lines,
-        paste(c(rows$factor_latex[i], rows$setting_latex[i], vals), collapse = " & "),
-        "\\\\"
-      )
-    }
-    if (factor_index < length(factors)) lines <- c(lines, "\\addlinespace")
-  }
-
-  lines <- c(lines, "\\bottomrule", "\\end{tabular}", "\\end{table}")
-  writeLines(lines, file.path(DIR_RESULTS, sprintf("table_sensitivity_results_n%d.tex", n_mc)))
-}
-
 allocation_by_stratum_summary <- function(allocations, final_traj, scenario, n_mc, prefix) {
   alloc_s <- allocations[allocations$scenario == scenario, ]
   K <- length(scenario_prevalence(scenario))
@@ -317,12 +193,10 @@ summarise_primary_outputs <- function(n_mc = SIM_SETTINGS$n_mc) {
 
   main_table <- main_table[order(main_table$scenario, match(main_table$method, METHODS)), ]
   write.csv(main_table, file.path(DIR_RESULTS, sprintf("table_main_results_n%d.csv", n_mc)), row.names = FALSE)
-  write_main_results_tex(main_table, n_mc)
 
   for (s in 1:4) {
     tab_s <- main_table[main_table$scenario == s, ]
     write.csv(tab_s, file.path(DIR_RESULTS, sprintf("table_scenario%d_results_n%d.csv", s, n_mc)), row.names = FALSE)
-    write_scenario_results_tex(main_table, s, n_mc)
   }
 
   learning_summary(trajectory, 1, n_mc, "figure2_scenario1")
@@ -382,11 +256,11 @@ summarise_primary_outputs <- function(n_mc = SIM_SETTINGS$n_mc) {
     names(fig6_cohort)[names(fig6_cohort) == "sensitivity_value"] <- "cohort_size"
     write.csv(fig6_cohort, file.path(DIR_RESULTS, sprintf("figure6_cohort_sensitivity_n%d.csv", n_mc)), row.names = FALSE)
 
-    sensitivity_block <- function(df, factor, factor_latex, setting_latex) {
+    sensitivity_block <- function(df, factor, factor_label, setting_label) {
       data.frame(
         factor = factor,
-        factor_latex = factor_latex,
-        setting_latex = setting_latex,
+        factor_label = factor_label,
+        setting_label = setting_label,
         n_mean = df$n_mean,
         n_se = df$n_se,
         regret_mean = df$regret_mean,
@@ -406,21 +280,21 @@ summarise_primary_outputs <- function(n_mc = SIM_SETTINGS$n_mc) {
       sensitivity_block(
         fig6_lambda,
         "lambda_c",
-        "$\\lambda_c$",
+        "lambda_c",
         format(fig6_lambda$lambda_c, trim = TRUE, scientific = FALSE)
       ),
       sensitivity_block(
         fig6_cnew,
         "c_new",
-        "$c_{\\mathrm{new}}$",
+        "c_new",
         format(fig6_cnew$c_new, trim = TRUE, scientific = FALSE)
       ),
       sensitivity_block(
         fig6_budget,
         "budget",
-        "$B_{\\max}$",
+        "B_max",
         sprintf(
-          "$%s\\times$ primary ($%s$)",
+          "%s x primary (%s)",
           format(fig6_budget$budget_multiplier, trim = TRUE, nsmall = 1),
           format(fig6_budget$b_max, trim = TRUE, scientific = FALSE)
         )
@@ -428,7 +302,7 @@ summarise_primary_outputs <- function(n_mc = SIM_SETTINGS$n_mc) {
       sensitivity_block(
         fig6_cohort,
         "cohort_size",
-        "Cohort size $r$",
+        "Cohort size r",
         format(fig6_cohort$cohort_size, trim = TRUE, scientific = FALSE)
       )
     )
@@ -437,7 +311,6 @@ summarise_primary_outputs <- function(n_mc = SIM_SETTINGS$n_mc) {
       file.path(DIR_RESULTS, sprintf("table_sensitivity_results_n%d.csv", n_mc)),
       row.names = FALSE
     )
-    write_sensitivity_results_tex(sensitivity_table, n_mc)
   }
 
   invisible(list(main_table = main_table))
