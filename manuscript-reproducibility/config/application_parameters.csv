@@ -1,0 +1,25 @@
+parameter,value,description
+calibration_study,Gandhi2014_1,Prespecified Brock study series
+toxicity_outcome,1,Prespecified toxicity outcome identifier
+efficacy_outcome,25,Prespecified efficacy outcome identifier
+omega,0.5,Toxicity weight in observed utility
+K,2,Number of replay strata
+prevalence,"0.65;0.35",Stratum prevalence vector
+weights,"0.55;0.45",Clinical priority weights
+n_initial,20,Initial sample size
+n_max,80,Maximum sample size
+b_max,350,Operational budget
+cohort_size,2,Sequential cohort size
+c_pt,1,Per-patient cost
+c_new,15,New dose-combination manufacturing cost
+c_scr,1,Screening cost multiplier
+lambda_c,0.5,Cost-sensitivity exponent
+seed,20260521,Application random seed
+smoothing_bandwidth,0.30,Two-dimensional kernel smoothing bandwidth
+deviation_scale_sd,2.60,Deviation amplitude multiplier for calibrated SD
+deviation_scale_range,0.75,Deviation amplitude multiplier for observed range
+opposite_penalty_fraction,0.18,Opposite-corner penalty fraction
+interaction_scale,0.08,Stratum interaction scale
+primary_bump_scale,0.17,Primary Gaussian bump scale
+opposite_bump_scale,0.22,Opposite Gaussian bump scale
+

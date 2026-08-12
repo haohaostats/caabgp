@@ -1,0 +1,26 @@
+\documentclass[border=6pt]{standalone}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\begin{document}
+\begin{minipage}{19.5cm}
+\textbf{Table 5. Fixed-budget operating characteristics in Scenario 3: mixed heterogeneity, rare-stratum prioritization, and high manufacturing cost.}
+
+\vspace{0.35em}\footnotesize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccccc}
+\toprule
+Design & Final sample size & Regret & Near-optimal selection & Dose distance & RPSEL & Unique doses & Total cost & $\widehat\rho_b$ \\
+\midrule
+S-GP & 45.352 (0.148) & 0.103 (0.007) & 0.916 (0.006) & 0.601 (0.010) & 0.284 (0.005) & 10.251 (0.035) & 547.679 (0.054) & -- \\
+P-GP & 50.726 (0.213) & 0.097 (0.006) & 0.915 (0.005) & 0.584 (0.010) & 0.274 (0.004) & 10.760 (0.043) & 547.607 (0.055) & -- \\
+IND-GP & 41.832 (0.139) & 0.219 (0.006) & 0.814 (0.006) & 0.787 (0.012) & 0.545 (0.006) & 10.884 (0.034) & 547.683 (0.055) & -- \\
+AB-GP & 51.480 (0.298) & 0.096 (0.005) & 0.909 (0.005) & 0.599 (0.008) & 0.290 (0.004) & 11.609 (0.054) & 547.604 (0.056) & 0.825 (0.007) \\
+CA-AB-GP & 60.882 (0.296) & 0.090 (0.004) & 0.921 (0.004) & 0.572 (0.008) & 0.265 (0.004) & 10.763 (0.050) & 547.790 (0.056) & 0.846 (0.006) \\
+\bottomrule
+\end{tabular}}
+
+\vspace{0.35em}\scriptsize Values are Monte Carlo means, with standard errors in parentheses; 1,000 replicates per design.
+\end{minipage}
+\end{document}

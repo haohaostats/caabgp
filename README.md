@@ -112,3 +112,13 @@ are intended only to illustrate the package workflow.
 Additional options for clinical priority weights, patient and screening costs,
 cost sensitivity, stratum-specific stopping, initial designs, and acquisition
 control are documented in `?caabgp`.
+
+## Manuscript reproducibility
+
+The complete code and verified numerical summaries used to reproduce the
+manuscript simulation study and real-data-calibrated application are provided
+in [`manuscript-reproducibility/`](manuscript-reproducibility/). This directory
+contains the four simulation scenarios, sensitivity analyses, the fixed Brock
+calibration application, vector PDF figures, LaTeX tables, deterministic seeds,
+and validation scripts. It is excluded from the installed R package and does
+not change the package API.

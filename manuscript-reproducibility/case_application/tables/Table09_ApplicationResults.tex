@@ -1,0 +1,26 @@
+\begin{table*}[t]
+	\centering
+	\caption{Final recommendations and operating summaries in the real-data-calibrated application. Values are based on the final analysis of the sequential replay study.}
+	\label{tab:application_results}
+	\footnotesize
+	\setlength{\tabcolsep}{4pt}
+	\begin{tabular}{llcccccccc}
+		\toprule
+		\textbf{Design} & \textbf{Stratum} & $\boldsymbol{\widehat{\bm d}_k}$ & $\boldsymbol{\mu_{T,k}(\widehat{\bm d}_k)}$ & $\boldsymbol{s_{T,k}(\widehat{\bm d}_k)}$ & \textbf{Final sample size} & \textbf{Unique doses} & \textbf{Repeat allocation} & \textbf{Total cost} & $\boldsymbol{\widehat\rho_b}$ \\
+		\midrule
+		\multirow{2}{*}{P-GP} & Stratum 1 & $(L1,L5)$ & -0.350 & 0.034 & \multirow{2}{*}{42} & \multirow{2}{*}{14} & \multirow{2}{*}{18.2\%} & \multirow{2}{*}{349.582} & -- \\
+		& Stratum 2 & $(L5,L1)$ & -0.254 & 0.053 & & & & & -- \\
+		\addlinespace
+		\multirow{2}{*}{AB-GP} & Stratum 1 & $(L1,L5)$ & -0.436 & 0.017 & \multirow{2}{*}{58} & \multirow{2}{*}{11} & \multirow{2}{*}{68.4\%} & \multirow{2}{*}{347.835} & \multirow{2}{*}{0.282} \\
+		& Stratum 2 & $(L5,L1)$ & -0.333 & 0.020 & & & & &  \\
+		\addlinespace
+		\multirow{2}{*}{CA-AB-GP} & Stratum 1 & $(L1,L5)$ & -0.423 & 0.015 & \multirow{2}{*}{78} & \multirow{2}{*}{7} & \multirow{2}{*}{93.1\%} & \multirow{2}{*}{349.154} & \multirow{2}{*}{0.378} \\
+		& Stratum 2 & $(L5,L1)$ & -0.295 & 0.017 & & & & &  \\
+		\bottomrule
+	\end{tabular}
+	\vspace{0.5em}
+	\begin{minipage}{0.95\textwidth}
+		\footnotesize
+		\textit{Note:} $\widehat{\bm d}_k$ denotes the final recommended dose-combination level for stratum $k$. Dose levels L1--L5 correspond to the ordered prespecified feasible levels of each treatment component from lowest to highest. $\mu_{T,k}(\widehat{\bm d}_k)$ and $s_{T,k}(\widehat{\bm d}_k)$ are the empirical-Bayes predictive mean and standard deviation at the recommended dose. Repeat allocation is the percentage of post-initial allocations assigned to dose combinations that had already been evaluated. The borrowing index $\widehat\rho_b$ is reported only for adaptive-borrowing designs.
+	\end{minipage}
+\end{table*}

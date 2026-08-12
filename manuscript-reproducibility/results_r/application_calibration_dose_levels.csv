@@ -1,0 +1,13 @@
+"dose","n_t","x_t","tox_text","n_e","x_e","eff_text","dose1_raw","dose2_raw","has_two_dimensional_dose","d1_std","d2_std","p_e","p_t","utility","y"
+"120 + 15",2,0,"patients with dlt safety ",2,0,"patients with disease control by recist efficacy if best response is cr, pr or sd",120,15,TRUE,0,0,0.166666666666667,0.166666666666667,0.0833333333333333,-0.0833333333333333
+"120 + 25",4,0,"patients with dlt safety ",5,2,"patients with disease control by recist efficacy if best response is cr, pr or sd",120,25,TRUE,0,0.166666666666667,0.416666666666667,0.1,0.366666666666667,-0.366666666666667
+"120 + 50",5,1,"patients with dlt safety ",5,2,"patients with disease control by recist efficacy if best response is cr, pr or sd",120,50,TRUE,0,0.583333333333333,0.416666666666667,0.25,0.291666666666667,-0.291666666666667
+"120 + 75",4,0,"patients with dlt safety ",4,1,"patients with disease control by recist efficacy if best response is cr, pr or sd",120,75,TRUE,0,1,0.3,0.1,0.25,-0.25
+"160 + 15",4,1,"patients with dlt safety ",4,1,"patients with disease control by recist efficacy if best response is cr, pr or sd",160,15,TRUE,0.333333333333333,0,0.3,0.3,0.15,-0.15
+"160 + 25",4,1,"patients with dlt safety ",4,2,"patients with disease control by recist efficacy if best response is cr, pr or sd",160,25,TRUE,0.333333333333333,0.166666666666667,0.5,0.3,0.35,-0.35
+"160 + 50",5,0,"patients with dlt safety ",7,1,"patients with disease control by recist efficacy if best response is cr, pr or sd",160,50,TRUE,0.333333333333333,0.583333333333333,0.1875,0.0833333333333333,0.145833333333333,-0.145833333333333
+"160 + 75",6,3,"patients with dlt safety ",6,1,"patients with disease control by recist efficacy if best response is cr, pr or sd",160,75,TRUE,0.333333333333333,1,0.214285714285714,0.5,-0.0357142857142857,0.0357142857142857
+"200 + 15",4,0,"patients with dlt safety ",4,0,"patients with disease control by recist efficacy if best response is cr, pr or sd",200,15,TRUE,0.666666666666667,0,0.1,0.1,0.05,-0.05
+"200 + 25",8,1,"patients with dlt safety ",8,2,"patients with disease control by recist efficacy if best response is cr, pr or sd",200,25,TRUE,0.666666666666667,0.166666666666667,0.277777777777778,0.166666666666667,0.194444444444444,-0.194444444444444
+"200 + 50",2,1,"patients with dlt safety ",5,0,"patients with disease control by recist efficacy if best response is cr, pr or sd",200,50,TRUE,0.666666666666667,0.583333333333333,0.0833333333333333,0.5,-0.166666666666667,0.166666666666667
+"240 + 15",4,2,"patients with dlt safety ",4,1,"patients with disease control by recist efficacy if best response is cr, pr or sd",240,15,TRUE,1,0,0.3,0.5,0.05,-0.05

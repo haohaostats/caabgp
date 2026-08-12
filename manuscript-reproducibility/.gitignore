@@ -1,0 +1,17 @@
+checkpoints/
+images/
+tmp/
+results_r/figure1_true_surfaces_dense_grid.csv
+results_r/simulation_trajectory_*.csv
+results_r/simulation_recommendations_*.csv
+results_r/simulation_allocations_*.csv
+results_r/simulation_borrowing_*.csv
+results_r/sensitivity_trajectory_*.csv
+results_r/sensitivity_recommendations_*.csv
+results_r/sensitivity_allocations_*.csv
+results_r/sensitivity_borrowing_*.csv
+*.RData
+*.Rhistory
+*.aux
+*.log
+*.out
