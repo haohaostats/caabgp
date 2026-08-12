@@ -87,7 +87,7 @@ plot_allocation <- function(result, design = result$design, recommendations = NU
         nudge_y = 0.035,
         fill = "white",
         color = "#111111",
-        label.size = 0.25,
+        linewidth = 0.25,
         size = base_size / 4
       )
   }
@@ -165,7 +165,7 @@ plot_surface <- function(fit, stratum = 1, design = fit$design, recommendations 
           nudge_y = 0.04,
           fill = "white",
           color = "#111111",
-          label.size = 0.25,
+          linewidth = 0.25,
           size = base_size / 4
         )
     }

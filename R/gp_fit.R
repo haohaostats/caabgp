@@ -100,9 +100,19 @@ gp_nll <- function(par, X, z, y, model, K) {
 default_starts <- function(y, model, J) {
   raw_var <- if (length(y) > 1) stats::var(y) else NA_real_
   vy <- if (is.finite(raw_var)) max(raw_var, 0.05^2) else 0.10
-  ell_a <- rep(0.35, J)
-  ell_b <- rep(0.55, J)
-  ell_c <- rep(0.22, J)
+  if (J == 2L) {
+    ell_a <- c(0.35, 0.35)
+    ell_b <- c(0.20, 0.45)
+    ell_c <- c(0.55, 0.25)
+    ell_ab_shared <- c(0.50, 0.50)
+    ell_ab_local <- c(0.25, 0.25)
+  } else {
+    ell_a <- rep(0.35, J)
+    ell_b <- rep(0.45, J)
+    ell_c <- rep(0.25, J)
+    ell_ab_shared <- rep(0.50, J)
+    ell_ab_local <- rep(0.25, J)
+  }
   if (model == "S") {
     starts <- rbind(c(0.70 * vy, ell_a, 0.20), c(0.50 * vy, ell_b, 0.15), c(1.00 * vy, ell_c, 0.25))
   } else if (model == "P") {
@@ -110,8 +120,8 @@ default_starts <- function(y, model, J) {
   } else if (model == "AB") {
     starts <- rbind(
       c(0.50 * vy, 0.20 * vy, ell_a, ell_a, 0.20),
-      c(0.75 * vy, 0.10 * vy, ell_b, ell_c, 0.15),
-      c(0.25 * vy, 0.50 * vy, ell_c, ell_b, 0.25)
+      c(0.75 * vy, 0.10 * vy, ell_ab_shared, ell_ab_local, 0.15),
+      c(0.25 * vy, 0.50 * vy, ell_ab_local, ell_ab_shared, 0.25)
     )
   } else {
     caabgp_stop("Unknown GP model: ", model)
@@ -135,7 +145,7 @@ parameter_bounds <- function(model, J) {
   list(lower = log(lower), upper = log(upper))
 }
 
-fit_gp_eb <- function(X, z, y, model, K, previous_par = NULL, maxit = 60) {
+fit_gp_eb <- function(X, z, y, model, K, previous_par = NULL, maxit = 40) {
   X <- as.matrix(X)
   z <- as.integer(z)
   y <- as.numeric(y)
@@ -208,7 +218,7 @@ predict_gp_eb <- function(fit, Xnew, znew) {
 sigma_hat <- function(fit) fit$params$sigma
 
 fit_caabgp <- function(data, design, dose_cols = design$dose_cols,
-                       stratum_col = "stratum", outcome_col = "y", previous = NULL, maxit = 60) {
+                       stratum_col = "stratum", outcome_col = "y", previous = NULL, maxit = 40) {
   validate_design(design)
   data <- as.data.frame(data)
   X <- as_dose_matrix(data, dose_cols)

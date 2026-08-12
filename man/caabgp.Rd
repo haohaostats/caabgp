@@ -41,6 +41,8 @@ caabgp_design(
   lambda_c = 0.5,
   xi = 1,
   pi_min = 0.02,
+  stopping_threshold = 0,
+  stopping_patience = NULL,
   initial_design = NULL,
   dose_cols = NULL
 )
@@ -52,7 +54,7 @@ fit_caabgp(
   stratum_col = "stratum",
   outcome_col = "y",
   previous = NULL,
-  maxit = 60
+  maxit = 40
 )
 
 predict_caabgp(object, newdata = object$design$dose_grid, ...)
@@ -74,7 +76,7 @@ run_caabgp_trial(
   stratum_col = "stratum",
   outcome_col = "y",
   seed = NULL,
-  maxit = 60
+  maxit = 40
 )
 
 recommend_dose(fit, design = fit$design)
@@ -162,6 +164,13 @@ aei_min(mu, sd, sigma, xi = 1)
 \item{lambda_c}{Cost-sensitivity parameter for cost-aware AEI.}
 \item{xi}{Effective-best conservatism parameter in augmented expected improvement.}
 \item{pi_min}{Lower bound for prevalence in screening-cost calculations.}
+\item{stopping_threshold}{Nonnegative stratum-specific acquisition thresholds
+used for early stopping. A scalar is recycled across strata. The default zero
+disables threshold-based early stopping because acquisition values are
+nonnegative.}
+\item{stopping_patience}{Number of consecutive interim updates below the
+threshold required to close a stratum. The default is \eqn{J+1}, where \eqn{J}
+is the number of treatment components.}
 \item{initial_design}{Optional initial dose combinations.}
 \item{dose_cols}{Dose-column names.}
 \item{data, initial_data}{Trial data with dose columns, stratum column, and outcome column.}
@@ -208,4 +217,10 @@ This first package version is intentionally focused on the proposed CA-AB-GP
 method. Comparator designs used in manuscript simulations are not exposed as
 package functions. Figures are generated as \code{ggplot2} objects and can be
 saved as vector PDF or SVG files using \code{save_caabgp_figure()}.
+
+Sequential allocation preserves the prespecified cohort size. A new cohort is
+enrolled only if the entire cohort satisfies both the sample-size and budget
+constraints. Acquisition values and stopping counters are updated for every
+active stratum after each completed cohort. Final recommendations are computed
+for all strata from a terminal fit using the complete trial history.
 }

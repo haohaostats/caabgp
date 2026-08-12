@@ -24,6 +24,8 @@ caabgp_design <- function(
     lambda_c = 0.5,
     xi = 1,
     pi_min = 0.02,
+    stopping_threshold = 0,
+    stopping_patience = NULL,
     initial_design = NULL,
     dose_cols = NULL) {
   grid <- as.data.frame(dose_grid)
@@ -36,6 +38,20 @@ caabgp_design <- function(
   if (sum(weights) <= 0) caabgp_stop("At least one stratum weight must be positive.")
   weights <- weights / sum(weights)
   prevalence <- prevalence / sum(prevalence)
+  stopping_threshold <- check_numeric_vector(
+    stopping_threshold, "stopping_threshold", nonnegative = TRUE
+  )
+  if (length(stopping_threshold) == 1L) {
+    stopping_threshold <- rep(stopping_threshold, n_strata)
+  } else if (length(stopping_threshold) != n_strata) {
+    caabgp_stop("stopping_threshold must have length 1 or n_strata.")
+  }
+  if (is.null(stopping_patience)) stopping_patience <- ncol(X) + 1L
+  if (!is.numeric(stopping_patience) || length(stopping_patience) != 1L ||
+      !is.finite(stopping_patience) || stopping_patience < 1 ||
+      stopping_patience != as.integer(stopping_patience)) {
+    caabgp_stop("stopping_patience must be a positive integer.")
+  }
   if (is.null(initial_design)) {
     initial_design <- grid[seq_len(min(nrow(grid), max(1, ncol(X) + 3))), dose_cols, drop = FALSE]
   }
@@ -58,6 +74,8 @@ caabgp_design <- function(
     lambda_c = lambda_c,
     xi = xi,
     pi_min = pi_min,
+    stopping_threshold = stopping_threshold,
+    stopping_patience = as.integer(stopping_patience),
     initial_design = initial_design
   )
   class(design) <- "caabgp_design"
@@ -71,6 +89,11 @@ validate_design <- function(design) {
   if (design$n_max < 1) caabgp_stop("n_max must be positive.")
   check_numeric_vector(c(design$cost_patient, design$cost_novel, design$cost_screening), "costs", nonnegative = TRUE)
   check_numeric_vector(design$lambda_c, "lambda_c", n = 1, nonnegative = TRUE)
+  check_numeric_vector(design$stopping_threshold, "stopping_threshold", design$n_strata, nonnegative = TRUE)
+  if (!is.numeric(design$stopping_patience) || length(design$stopping_patience) != 1L ||
+      design$stopping_patience < 1L) {
+    caabgp_stop("stopping_patience must be a positive integer.")
+  }
   invisible(TRUE)
 }
 
@@ -80,5 +103,6 @@ print.caabgp_design <- function(x, ...) {
   cat("  strata:", x$n_strata, "\n")
   cat("  cohort size:", x$cohort_size, "\n")
   cat("  n_max:", x$n_max, " budget_max:", x$budget_max, "\n")
+  cat("  stopping patience:", x$stopping_patience, "interim updates\n")
   invisible(x)
 }

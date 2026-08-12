@@ -33,10 +33,20 @@ residual_sd_by_stratum <- function(fit) {
   rep(sigma_hat(fit$fit), fit$design$n_strata)
 }
 
-suggest_next <- function(fit, design = fit$design, manufactured = NULL, cohort_size = design$cohort_size,
-                         remaining_budget = Inf, active_strata = seq_len(design$n_strata)) {
+caabgp_acquisition_table <- function(
+    fit,
+    design = fit$design,
+    manufactured = NULL,
+    cohort_size = design$cohort_size,
+    remaining_budget = Inf,
+    active_strata = seq_len(design$n_strata)) {
   if (!inherits(fit, "caabgp_fit")) caabgp_stop("fit must be a caabgp_fit object.")
   validate_design(design)
+  active_strata <- sort(unique(as.integer(active_strata)))
+  active_strata <- active_strata[
+    active_strata >= 1L & active_strata <= design$n_strata
+  ]
+  if (!length(active_strata)) return(data.frame())
   pred <- predict_caabgp(fit, design$dose_grid)
   grid <- as_dose_matrix(design$dose_grid, design$dose_cols)
   if (is.null(manufactured)) manufactured <- manufactured_keys_from_data(fit$data, fit$dose_cols)
@@ -64,7 +74,20 @@ suggest_next <- function(fit, design = fit$design, manufactured = NULL, cohort_s
     )
     id <- id + 1L
   }
-  acq <- do.call(rbind, rows)
+  do.call(rbind, rows)
+}
+
+suggest_next <- function(fit, design = fit$design, manufactured = NULL, cohort_size = design$cohort_size,
+                         remaining_budget = Inf, active_strata = seq_len(design$n_strata)) {
+  acq <- caabgp_acquisition_table(
+    fit = fit,
+    design = design,
+    manufactured = manufactured,
+    cohort_size = cohort_size,
+    remaining_budget = remaining_budget,
+    active_strata = active_strata
+  )
+  if (!nrow(acq)) return(NULL)
   if (!any(acq$feasible)) return(NULL)
   if (all(!is.finite(acq$score)) || all(acq$score <= 0, na.rm = TRUE)) {
     acq$score <- -acq$mu

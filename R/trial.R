@@ -40,7 +40,7 @@ recommend_dose <- function(fit, design = fit$design) {
 
 run_caabgp_trial <- function(initial_data, design, outcome_generator,
                              dose_cols = design$dose_cols, stratum_col = "stratum",
-                             outcome_col = "y", seed = NULL, maxit = 60) {
+                             outcome_col = "y", seed = NULL, maxit = 40) {
   validate_design(design)
   if (!is.null(seed)) set.seed(seed)
   data <- as.data.frame(initial_data)
@@ -49,6 +49,9 @@ run_caabgp_trial <- function(initial_data, design, outcome_generator,
   previous <- NULL
   allocations <- list()
   trajectory <- list()
+  active_strata <- seq_len(design$n_strata)
+  stopping_counters <- integer(design$n_strata)
+  completed_updates <- 0L
   step <- 1L
   repeat {
     fit <- fit_caabgp(data, design, dose_cols, stratum_col, outcome_col, previous = previous, maxit = maxit)
@@ -59,19 +62,46 @@ run_caabgp_trial <- function(initial_data, design, outcome_generator,
       n = nrow(data),
       total_cost = total_cost,
       unique_doses = length(manufactured),
-      borrowing_index = borrowing_index(fit)$rho[1]
+      borrowing_index = borrowing_index(fit)$rho[1],
+      active_strata = paste(active_strata, collapse = ",")
     )
-    if (nrow(data) >= design$n_max || total_cost >= design$budget_max) break
-    remaining <- design$budget_max - total_cost
-    cohort <- min(design$cohort_size, design$n_max - nrow(data))
-    action <- NULL
-    for (r_try in seq(from = cohort, to = 1L, by = -1L)) {
-      action <- suggest_next(fit, design, manufactured = manufactured, cohort_size = r_try, remaining_budget = remaining)
-      if (!is.null(action)) {
-        cohort <- r_try
-        break
+
+    if (completed_updates > 0L && length(active_strata)) {
+      stopping_acq <- caabgp_acquisition_table(
+        fit = fit,
+        design = design,
+        manufactured = manufactured,
+        cohort_size = design$cohort_size,
+        remaining_budget = Inf,
+        active_strata = active_strata
+      )
+      for (k in active_strata) {
+        scores_k <- stopping_acq$score[stopping_acq$stratum == k]
+        max_score_k <- if (length(scores_k)) max(scores_k, na.rm = TRUE) else -Inf
+        if (is.finite(max_score_k) && max_score_k < design$stopping_threshold[k]) {
+          stopping_counters[k] <- stopping_counters[k] + 1L
+        } else {
+          stopping_counters[k] <- 0L
+        }
       }
+      active_strata <- active_strata[
+        stopping_counters[active_strata] < design$stopping_patience
+      ]
     }
+
+    if (!length(active_strata)) break
+    if (nrow(data) + design$cohort_size > design$n_max) break
+    remaining <- design$budget_max - total_cost
+    if (remaining <= 0) break
+    cohort <- design$cohort_size
+    action <- suggest_next(
+      fit,
+      design,
+      manufactured = manufactured,
+      cohort_size = cohort,
+      remaining_budget = remaining,
+      active_strata = active_strata
+    )
     if (is.null(action)) break
     dose <- as.numeric(action[1, dose_cols])
     k <- as.integer(action$stratum[1])
@@ -91,6 +121,7 @@ run_caabgp_trial <- function(initial_data, design, outcome_generator,
       n = nrow(data),
       unique_doses = length(manufactured)
     )
+    completed_updates <- completed_updates + 1L
     step <- step + 1L
   }
   final_fit <- fit_caabgp(data, design, dose_cols, stratum_col, outcome_col, previous = previous, maxit = maxit)
@@ -103,7 +134,9 @@ run_caabgp_trial <- function(initial_data, design, outcome_generator,
     recommendations = recommend_dose(final_fit, design),
     allocations = if (length(allocations)) do.call(rbind, allocations) else data.frame(),
     trajectory = do.call(rbind, trajectory),
-    total_cost = total_cost
+    total_cost = total_cost,
+    active_strata = active_strata,
+    stopping_counters = stopping_counters
   )
   class(result) <- "caabgp_trial"
   result
@@ -115,8 +148,20 @@ make_initial_data <- function(design, outcome_generator, n_initial = NULL, seed 
   validate_design(design)
   if (!is.null(seed)) set.seed(seed)
   n_initial <- null_coalesce(n_initial, max(2 * design$n_strata, nrow(design$initial_design)))
-  counts <- pmax(1L, floor(n_initial * design$weights))
-  while (sum(counts) < n_initial) counts[which.max(n_initial * design$weights - counts)] <- counts[which.max(n_initial * design$weights - counts)] + 1L
+  min_per_stratum <- 2L
+  if (n_initial < min_per_stratum * design$n_strata) {
+    caabgp_stop("n_initial must allow at least two patients per stratum.")
+  }
+  counts <- rep(min_per_stratum, design$n_strata)
+  remaining <- n_initial - sum(counts)
+  target <- remaining * design$weights / sum(design$weights)
+  add <- floor(target)
+  counts <- counts + add
+  while (sum(counts) < n_initial) {
+    j <- which.max(target - add)
+    counts[j] <- counts[j] + 1L
+    add[j] <- add[j] + 1L
+  }
   rows <- list()
   id <- 1L
   for (k in seq_len(design$n_strata)) {
