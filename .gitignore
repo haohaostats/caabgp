@@ -9,3 +9,4 @@
 allocation_map.*
 Thumbs.db
 .DS_Store
+!manuscript-reproducibility/**/*.pdf
