@@ -119,6 +119,6 @@ The complete code and verified numerical summaries used to reproduce the
 manuscript simulation study and real-data-calibrated application are provided
 in [`manuscript-reproducibility/`](manuscript-reproducibility/). This directory
 contains the four simulation scenarios, sensitivity analyses, the fixed Brock
-calibration application, R-generated vector PDF figures and tables, deterministic seeds,
+calibration application, deterministic seeds,
 and validation scripts. It is excluded from the installed R package and does
 not change the package API.
