@@ -60,4 +60,3 @@ The analysis uses base R and the recommended `parallel` and `grid` packages. It 
 - Random-number seeds are deterministic and defined in the code.
 - GP hyperparameters are estimated by empirical Bayes during each analysis; this is part of the prespecified algorithm.
 - The four simulation scenarios and sensitivity grids are fixed in `R/00_settings.R` and `R/01_surfaces.R`.
-- PDFs are vector graphics. Exact PDF bytes can differ across operating systems because of fonts and PDF metadata, so numerical CSV files are the primary validation targets.
